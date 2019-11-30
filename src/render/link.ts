@@ -1,0 +1,11 @@
+import {Point} from "./point";
+
+export class Link {
+    a: Point;
+    b: Point;
+
+    constructor(a: Point, b: Point) {
+        this.a = a;
+        this.b = b;
+    }
+}
