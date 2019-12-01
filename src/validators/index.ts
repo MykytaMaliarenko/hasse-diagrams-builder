@@ -2,6 +2,6 @@ export const equationValidate = (text: string): boolean => {
     return false;
 };
 
-export const setValidate= (text: string): boolean => {
+export const datasetValidate = (text: Array<number>): boolean => {
     return false;
 };
