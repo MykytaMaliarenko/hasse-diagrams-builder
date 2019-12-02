@@ -1,12 +1,19 @@
+type Coords = {
+    x: number
+    y: number
+}
+
+
 export class Point {
-    name: string;
-    x: number;
-    y: number;
     isActive: boolean = true;
 
-    constructor(name: string) {
-        this.name = name;
-        this.x = 0;
-        this.y = 0;
+    constructor(public name: string, private _coords: Coords) {}
+
+    set coords(coords: Coords) {
+        this._coords = coords;
+    }
+
+    get coords(): Coords {
+        return this._coords;
     }
 }

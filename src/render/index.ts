@@ -1,15 +1,12 @@
 import {RenderData} from "./renderData";
 
-class CoreRender {
-    mainCanvas: object;
-    subCanvas: object;
+export class CoreRender {
 
-    constructor(mainCanvas: object, subCanvas: object) {
-        this.mainCanvas = mainCanvas;
-        this.subCanvas = subCanvas;
+    constructor(private mainCanvas: HTMLElement, private subCanvas: HTMLElement) {
+        //add event handlers
     }
 
     render(data: RenderData) {
-
+        //render data
     }
 }
