@@ -2,6 +2,7 @@ import {state, STATE_STAGE1, STATE_STAGE2, STATE_LOADING} from "./state";
 import {datasetValidate, equationValidate} from "./validators";
 import {DiagramAPI} from "./api/diagramsAPI";
 import {CoreRender} from "./render";
+import "./styles/index.sass"
 
 const APP_STATE: state = STATE_STAGE1;
 
