@@ -1,12 +1,7 @@
 class HttpWrapper {
-    backendURL: string;
-    defaultHeaders: object;
 
-    constructor(backendURL: string, defaultHeaders: object) {
-        this.backendURL = backendURL;
-        this.defaultHeaders = defaultHeaders;
+    constructor(private _backendURL: string, private _defaultHeaders: object) {
     }
-
 
     get(resource: string, params: object) {
 
