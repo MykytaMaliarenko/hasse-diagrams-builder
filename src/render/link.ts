@@ -2,13 +2,13 @@ import {Point} from "./point";
 
 export class Link {
 
-    constructor(private _a: Point, private _b: Point) {}
+    constructor(private _x: Point, private _y: Point) {}
 
-    get a(): Point {
-        return this._a
+    get x(): Point {
+        return this._x
     }
 
-    get b(): Point {
-        return this._b
+    get y(): Point {
+        return this._y
     }
 }
