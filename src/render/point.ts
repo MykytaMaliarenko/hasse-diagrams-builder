@@ -5,12 +5,22 @@ type Coords = {
 
 
 export class Point {
-    isActive: boolean = true;
+    private _active: boolean = true;
 
-    constructor(public name: string, private _coords: Coords) {}
+    private _coords = {
+        x: 0,
+        y: 0
+    };
 
-    set coords(coords: Coords) {
-        this._coords = coords;
+    constructor(private _id: number, private _value: number) {
+    }
+
+    eq(p: Point): boolean {
+        return this._id == p._id
+    }
+
+    isActive() {
+        return this._active
     }
 
     get coords(): Coords {
