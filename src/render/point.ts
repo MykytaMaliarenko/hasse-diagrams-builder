@@ -26,4 +26,12 @@ export class Point {
     get coords(): Coords {
         return this._coords;
     }
+
+    get id(): number {
+        return this._id
+    }
+
+    get value(): number {
+        return this._value
+    }
 }
