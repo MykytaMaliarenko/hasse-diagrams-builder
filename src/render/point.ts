@@ -23,6 +23,11 @@ export class Point {
         return this._coords;
     }
 
+    set coords(v: {x: number, y: number}) {
+        this._coords.x = v.x;
+        this._coords.y = v.y;
+    }
+
     get id(): number {
         return this._id
     }
