@@ -6,32 +6,34 @@ const MARGIN_Y = 50;
 export class CoreRender {
     private _renderData!: RenderData;
 
-    private _width: number;
-    private _height: number;
+    private _width: number = 0;
+    private _height: number = 0;
 
     constructor(private container: HTMLElement,
                 private _mainCanvas: HTMLCanvasElement, private _subCanvas: HTMLCanvasElement) {
         //add event handlers
 
         window.onresize = () => {
-            _mainCanvas.width = container.clientWidth;
-            _mainCanvas.height = container.clientHeight;
-
-            this._width = _mainCanvas.width;
-            this._height = _mainCanvas.height;
-
+            this.sizes = {w: container.clientWidth, h: container.clientHeight};
             this.render();
         };
 
-        _mainCanvas.width = container.clientWidth;
-        _mainCanvas.height = container.clientHeight;
-
-        this._width = _mainCanvas.width;
-        this._height = _mainCanvas.height;
+        this.sizes = {w: container.clientWidth, h: container.clientHeight};
     }
 
     set renderData(v: RenderData) {
         this._renderData = v;
+    }
+
+    private set sizes(sizes: {w: number, h: number}) {
+        this._mainCanvas.width = sizes.w;
+        this._mainCanvas.height = sizes.h;
+
+        this._subCanvas.width = sizes.w;
+        this._subCanvas.height = sizes.h;
+
+        this._width = sizes.w;
+        this._height = sizes.h;
     }
 
     render() {
@@ -42,7 +44,7 @@ export class CoreRender {
         let points = this._renderData.points;
         //console.log({points});
         points.forEach((line) => {
-            line.forEach(point => {
+            line.filter(p => p.active).forEach(point => {
                 ctx.beginPath();
                 ctx.arc(point.coords.x, point.coords.y, 5, 0, 2 * Math.PI);
                 ctx.strokeStyle = '#000000';
@@ -53,7 +55,7 @@ export class CoreRender {
         });
 
         let links = this._renderData.links;
-        links.forEach(link => {
+        links.filter(link => link.x.active && link.y.active).forEach(link => {
             ctx.beginPath();
             ctx.moveTo(link.x.coords.x, link.x.coords.y);
             ctx.lineTo(link.y.coords.x, link.y.coords.y);
