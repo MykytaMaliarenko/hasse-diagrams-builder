@@ -1,17 +1,19 @@
 class HttpWrapper {
 
-    constructor(private _backendURL: string, private _defaultHeaders: Headers | string[][] | Record<string, string>) {
+    constructor(private _backendURL: string, private _defaultHeaders: Record<string, string>) {
     }
 
     get(resource: string) {
 
     }
 
-    post(resource: string, body: string) {
+    post(resource: string, body: string, headers: Record<string, string>) {
+        let myHeaders = {...this._defaultHeaders, ...headers};
+
         return fetch(`${this._backendURL}/${resource}`, {
             method: "POST",
             mode: "cors",
-            headers: this._defaultHeaders,
+            headers: myHeaders,
             body
         })
     }
