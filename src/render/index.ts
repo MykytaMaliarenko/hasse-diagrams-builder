@@ -1,4 +1,6 @@
 import {RenderData} from "./renderData";
+import {Point} from "./point";
+import {DrawerType, drawer} from "./drawer";
 
 const MARGIN_X = 40;
 const MARGIN_Y = 50;
@@ -9,20 +11,34 @@ export class CoreRender {
     private _width: number = 0;
     private _height: number = 0;
 
+    private _clicked_point: Point | null = null;
+
+    private _mainCanvasDrawer: DrawerType;
+    private _subCanvasDrawer: DrawerType;
+
     constructor(private container: HTMLElement,
                 private _mainCanvas: HTMLCanvasElement, private _subCanvas: HTMLCanvasElement) {
         //add event handlers
-
         window.onresize = () => {
             this.sizes = {w: container.clientWidth, h: container.clientHeight};
             this.render();
         };
 
         this.sizes = {w: container.clientWidth, h: container.clientHeight};
+
+        this._mainCanvasDrawer = drawer(this._mainCanvas);
+        this._subCanvasDrawer = drawer(this._subCanvas);
+
+        _subCanvas.onmousedown = (e) => this.onClick(e);
+
+        _subCanvas.onmousemove = (e) => this.onMouseMove(e);
+
+        _subCanvas.onmouseup = () => this.onMouseUp();
     }
 
     set renderData(v: RenderData) {
         this._renderData = v;
+        this.calculateCoords();
     }
 
     private set sizes(sizes: {w: number, h: number}) {
@@ -36,31 +52,27 @@ export class CoreRender {
         this._height = sizes.h;
     }
 
-    render() {
+    recalculateCoords() {
         this.calculateCoords();
+    }
 
-        let ctx = this._mainCanvas.getContext("2d")!;
-
+    render() {
+        this._mainCanvasDrawer.clear();
         let points = this._renderData.points;
         //console.log({points});
         points.forEach((line) => {
-            line.filter(p => p.active).forEach(point => {
-                ctx.beginPath();
-                ctx.arc(point.coords.x, point.coords.y, 5, 0, 2 * Math.PI);
-                ctx.strokeStyle = '#000000';
-                ctx.fill();
-                ctx.stroke();
-                ctx.fillText(`${point.value}`, point.coords.x + 10, point.coords.y);
-            });
+            line.filter(p => p.active).forEach(point => this._mainCanvasDrawer.drawPoint(point));
         });
 
         let links = this._renderData.links;
-        links.filter(link => link.x.active && link.y.active).forEach(link => {
-            ctx.beginPath();
-            ctx.moveTo(link.x.coords.x, link.x.coords.y);
-            ctx.lineTo(link.y.coords.x, link.y.coords.y);
-            ctx.stroke();
-        });
+        links.filter(link => link.x.active && link.y.active).forEach(link => this._mainCanvasDrawer.drawLink(link));
+    }
+
+    renderSub() {
+        this._subCanvasDrawer.clear();
+        if (this._clicked_point) {
+            this._subCanvasDrawer.drawPoint(this._clicked_point);
+        }
     }
 
     private calculateYStep(numOfLines: number): number {
@@ -89,5 +101,46 @@ export class CoreRender {
                 line[0].coords.y = y - (MARGIN_Y / 2);
             }
         })
+    }
+
+    private onClick(e: MouseEvent) {
+        let x = e.offsetX,
+            y = e.offsetY;
+
+        this._renderData.points.every(line => {
+            return line.every(point => {
+                console.log({point, delta: {x: Math.abs(point.coords.x - x), y: Math.abs(point.coords.y - y)}});
+                if (Math.abs(point.coords.x - x) < 10 && Math.abs(point.coords.y - y) < 10) {
+                    point.active = !point.active;
+                    this._clicked_point = point;
+                    return false
+                }
+                return true
+            })
+        });
+
+        this.render();
+        this._subCanvasDrawer.clear();
+        this._subCanvasDrawer.drawPoint(this._clicked_point!);
+    }
+
+    private onMouseMove(e: MouseEvent) {
+        if (this._clicked_point) {
+            this._clicked_point.coords = {
+                x: e.offsetX,
+                y: e.offsetY,
+            };
+            this._subCanvasDrawer.clear();
+            this._subCanvasDrawer.drawPoint(this._clicked_point);
+        }
+    }
+
+    private onMouseUp() {
+        if (this._clicked_point) {
+            this._subCanvasDrawer.clear();
+            this._clicked_point!.active = true;
+            this._clicked_point = null;
+            this.render();
+        }
     }
 }
