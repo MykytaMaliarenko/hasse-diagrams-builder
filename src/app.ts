@@ -2,6 +2,7 @@ import {state, STATE_STAGE1, STATE_STAGE2, STATE_LOADING} from "./state";
 import {datasetValidate, equationValidate} from "./validators";
 import {DiagramAPI} from "./api/diagramsAPI";
 import {CoreRender} from "./render";
+
 import "./styles/index.sass"
 
 const APP_STATE: state = STATE_STAGE1;
@@ -21,12 +22,14 @@ window.onload = () => {
                 dataset: Array<number> = [];
 
             if (datasetValidate(dataset) && equationValidate(equation)) {
-                let renderData = await DiagramAPI.calculateDiagram(equation, dataset),
-                    mainCanvas = document.getElementById("mainCanvas")!!,
-                    subCanvas = document.getElementById("subCanvas")!!;
+                let renderData = await DiagramAPI.buildDiagram(equation, dataset),
+                    container = document.getElementById("stage2")!!,
+                    mainCanvas = <HTMLCanvasElement> document.getElementById("mainCanvas")!!,
+                    subCanvas = <HTMLCanvasElement> document.getElementById("subCanvas")!!;
 
-                let coreRender = new CoreRender(mainCanvas, subCanvas);
-                coreRender.render(renderData);
+                let coreRender = new CoreRender(container, mainCanvas, subCanvas);
+                coreRender.renderData = renderData!;
+                coreRender.render();
             } else {
                 //notify user that input is wrong
             }
