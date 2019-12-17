@@ -5,7 +5,7 @@ type Coords = {
 
 
 export class Point {
-    private _active: boolean = true;
+    public active: boolean = true;
 
     private _coords = {
         x: 0,
@@ -17,10 +17,6 @@ export class Point {
 
     eq(p: Point): boolean {
         return this._id == p._id
-    }
-
-    isActive() {
-        return this._active
     }
 
     get coords(): Coords {
