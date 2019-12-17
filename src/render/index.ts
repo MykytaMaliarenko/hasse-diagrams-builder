@@ -1,6 +1,7 @@
 import {RenderData} from "./renderData";
-import {Point} from "./point";
-import {Link} from "./link";
+
+const MARGIN_X = 40;
+const MARGIN_Y = 50;
 
 export class CoreRender {
     private _renderData!: RenderData;
@@ -40,16 +41,18 @@ export class CoreRender {
 
         let points = this._renderData.points;
         //console.log({points});
-        points.forEach((point) => {
-            ctx.beginPath();
-            ctx.arc(point.coords.x, point.coords.y, 5, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#000000';
-            ctx.fill();
-            ctx.stroke();
+        points.forEach((line) => {
+            line.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(point.coords.x, point.coords.y, 5, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#000000';
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillText(`${point.value}`, point.coords.x + 10, point.coords.y);
+            });
         });
 
         let links = this._renderData.links;
-        //console.log({links});
         links.forEach(link => {
             ctx.beginPath();
             ctx.moveTo(link.x.coords.x, link.x.coords.y);
@@ -58,90 +61,31 @@ export class CoreRender {
         });
     }
 
-    private divideIntoLines(): Array<Array<Point>> {
-        let res = new Array<Array<Point>>();
-
-        let points = this._renderData.points;
-
-        while (true) {
-            let line = new Array<Point>();
-
-            if (res.length == 0) {
-                points.forEach((point) => {
-                    let links = this.getLinksWitchEndsWith(point);
-                    if (links.length == 0) {
-                        line.push(point);
-                    }
-                })
-            } else {
-                let prevLine = res[res.length - 1];
-                prevLine.forEach((point) => {
-                    let links = this.getLinksWitchStartsWith(point);
-                    links.forEach(link => {
-                        let t = line.filter(l => l.eq(link.y));
-                        if (t.length === 0)
-                            line.push(link.y)
-                    })
-                })
-            }
-
-            if (line.length != 0)
-                res.push(line);
-            else
-                break
-        }
-
-        return res;
-    }
-
-    private getLinksWitchStartsWith(p: Point): Array<Link> {
-        let links = this._renderData.links;
-        let res = new Array<Link>();
-
-        links.forEach((link) => {
-            if (link.x.eq(p)) {
-                res.push(link)
-            }
-        });
-
-        return res
-    }
-
-    private getLinksWitchEndsWith(p: Point): Array<Link> {
-        let links = this._renderData.links;
-        let res = new Array<Link>();
-
-        links.forEach((link) => {
-            if (link.y.eq(p)) {
-                res.push(link)
-            }
-        });
-
-        return res
-    }
-
     private calculateYStep(numOfLines: number): number {
-        return this._height / numOfLines
+        return (this._height - MARGIN_Y ) / numOfLines
     }
 
     private calculateXStep(numOfPoints: number): number {
-        return this._width / numOfPoints
+        return (this._width - MARGIN_X ) / numOfPoints
     }
 
     private calculateCoords() {
-        let lines = this.divideIntoLines();
-        let yStep = this.calculateYStep(lines.length);
-
-        //console.log({lines});
+        let lines = this._renderData.points;
+        let yStep = this.calculateYStep(lines.length - 1);
 
         lines.forEach((line, lineIndex) => {
-            let xStep = this.calculateXStep(line.length),
-                y = this._height - lineIndex * yStep - 50;
+            let y = this._height - (lineIndex) * yStep;
 
-            line.forEach((point, index) => {
-                point.coords.x = xStep * index + 50;
-                point.coords.y = y;
-            })
+            if (line.length != 1) {
+                let xStep =  this.calculateXStep(line.length - 1);
+                line.forEach((point, index) => {
+                    point.coords.x = xStep * index + (MARGIN_X / 2);
+                    point.coords.y = y - (MARGIN_Y / 2);
+                })
+            } else {
+                line[0].coords.x = this._width / 2 + (MARGIN_X / 2);
+                line[0].coords.y = y - (MARGIN_Y / 2);
+            }
         })
     }
 }
