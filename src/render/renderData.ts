@@ -3,9 +3,9 @@ import {Link} from "./link";
 
 export class RenderData {
 
-    constructor(private _points: Array<Point>, private _links: Array<Link>) {}
+    constructor(private _points: Array<Array<Point>>, private _links: Array<Link>) {}
 
-    get points(): Array<Point> {
+    get points(): Array<Array<Point>> {
         return this._points
     }
 
