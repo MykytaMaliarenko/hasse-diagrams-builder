@@ -28,15 +28,12 @@ jobs:
       run: |
         npm install
         npm run build
-    - name: Commit files
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add -f dist
-        git commit -m "New version" 
-    - name: Push changes
-      uses: ad-m/github-push-action@master
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        github_token: ${{ secrets.pages_token }}
+        ACCESS_TOKEN: ${{ secrets.pages_token }}
+        BASE_BRANCH: workflow # The branch the action should deploy from.
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: dist # The folder the action should deploy.
       env:
         CI: true
