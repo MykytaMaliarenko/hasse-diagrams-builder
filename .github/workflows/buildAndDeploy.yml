@@ -1,5 +1,8 @@
 name: Build and Deploy
-on: [push]
+on:
+  push:
+    branches:
+    - master
 jobs:
   build:
     runs-on: windows-latest # The first job utilizes windows-latest
