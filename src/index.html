@@ -7,15 +7,36 @@
 </head>
 
 <body>
-    <h1>Hello world!</h1>
-
-    <section class="body">
+    <section class="container">
         <section id="stage1">
-            <!--Here user can input all data-->
-            <input id="equationInput" type="text" />
-            <input id="setInput" type="text" />
+            <section class="row">
+                <p>Введите отношение:</p>
+            </section>
 
-            <button id="buildButton">Build Diagram</button>
+            <section class="row content-center">
+                <input id="leftEquationInput" type="text" />
+
+                <select id="operationSelect">
+                    <option>< </option>
+                    <option>> </option>
+                    <option>: </option>
+                </select>
+
+                <input id="rightEquationInput" type="text" />
+            </section>
+
+            <section class="row divide">
+                <p>Введите множество:</p>
+            </section>
+
+            <section class="row">
+                <input id="setInput" type="text" class="full-size-input" />
+            </section>
+
+            <section class="row">
+                <button id="buildDiagramButton">Build Diagram</button>
+            </section>
+
         </section>
 
         <section id="stage2">
