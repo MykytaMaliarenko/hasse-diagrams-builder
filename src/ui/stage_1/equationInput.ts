@@ -23,6 +23,10 @@ export class EquationInput implements UIComponent {
         switch (operation) {
             case ":":
                 operation = "::";
+                break;
+
+            case "=>":
+                operation = ">=";
                 break
         }
 

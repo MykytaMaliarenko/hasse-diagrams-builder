@@ -11,7 +11,7 @@ window.onload = async () => {
         mainCanvas = <HTMLCanvasElement> document.getElementById("mainCanvas")!,
         subCanvas = <HTMLCanvasElement> document.getElementById("subCanvas")!;
 
-    let renderData = await DiagramAPI.buildDiagram("xmod(4) > ymod(4)", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    let renderData = await DiagramAPI.buildDiagram("x^2 >= y^2", [0, -1, 1, -2, 2, 3]);
 
     let coreRender = new CoreRender(container, mainCanvas, subCanvas);
     coreRender.renderData = renderData!!;
